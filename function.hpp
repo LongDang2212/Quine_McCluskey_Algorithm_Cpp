@@ -75,4 +75,6 @@ public:
     void data_input();
     vector<string> reduce();
     void remove_unnecessary();
+    void processs();
+    void show_results();
 };

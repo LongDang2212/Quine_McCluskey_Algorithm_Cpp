@@ -2,35 +2,30 @@
 
 int main()
 {
-
-    QM a;
-    a.init();
-    a.data_input();
-    auto x = a.minterms_expression;
-    do
-    {
-        x.clear();
-        x = a.reduce();
-    } while (vector_equal(x, a.reduce()));
-    a.remove_unnecessary();
-    cout << "Ham toi thieu: " << endl;
-    cout << a.bin_to_expression(a.necessary.at(0));
-    for (int i = 1; i < a.necessary.size(); i++)
-    {
-        cout << "  +  " << a.bin_to_expression(a.necessary.at(i));
-    }
-    if (!a.one_for_all.empty())
+    bool run = true;
+x:
+    if (run)
     {
         cout << endl
-             << " Cong them cac hang sau: " << endl;
-        for (int i = 0; i < a.one_for_all.size(); i++)
-        {
-            for (int j = 0; j < a.one_for_all.at(i).size(); j++)
-            {
-                cout << " or " << a.bin_to_expression(a.one_for_all.at(i).at(j));
-            }
-            cout << endl;
-        }
+             << "Quine-McClusky algorithm!" << endl;
+        QM a;
+        a.init();
+        a.data_input();
+        a.processs();
+        a.show_results();
+        run = false;
+        cout << endl
+             << "Ban co muon thuc hien tiep?" << endl
+             << "Nhap y hoac Y de tiep tuc!" << endl;
+        char s;
+        cin >> s;
+        if (s == 'y' || s == 'Y')
+            run = true;
+        else
+            cout << endl
+                 << "Cam on ban. Hen gap lai!" << endl;
+
+        goto x;
     }
     cout << endl;
     system("pause");

@@ -288,17 +288,18 @@ void QM::remove_unnecessary()
 {
     vector<int> un;
     auto v = find_root_minterm(vector_concatenate(minterms_expression, prime_implicants));
-    cout << endl;
+    cout << "Cac minterm tao thanh PI:" << endl;
     for (int i = 0; i < v.size(); i++)
     {
+        cout << "PI" << i + 1 << ": ";
         for (int j = 0; j < v.at(i).size(); j++)
             cout << v.at(i).at(j) << "\t";
         cout << endl;
     }
-    cout << endl;
-    for (int i = 0; i < minterms.size(); i++)
-        cout << minterms.at(i) << "\t";
-    cout << endl;
+    // cout << endl;
+    // for (int i = 0; i < minterms.size(); i++)
+    //     cout << minterms.at(i) << "\t";
+    // cout << endl;
     vector<vector<int>> x(minterms.size(), vector<int>(v.size(), 0));
     for (int i = 0; i < x.size(); i++)
     {
@@ -308,7 +309,7 @@ void QM::remove_unnecessary()
                 x.at(i).at(j)++;
         }
     }
-    cout << endl;
+    cout << "Ma tran cac PI va cac minterm:" << endl;
     for (int i = 0; i < x.size(); i++)
     {
         for (int j = 0; j < x.at(0).size(); j++)
@@ -316,7 +317,7 @@ void QM::remove_unnecessary()
         cout << endl;
     }
     x = mark_essential(x);
-    cout << endl;
+    cout << "Ma tran sau khi xu ly, tim cac essential: " << endl;
     for (int i = 0; i < x.size(); i++)
     {
         for (int j = 0; j < x.at(i).size(); j++)
@@ -359,3 +360,62 @@ void QM::remove_unnecessary()
             one_for_all.push_back(c);
     }
 }
+void QM::processs()
+{
+    auto x = minterms_expression;
+    do
+    {
+        x.clear();
+        x = this->reduce();
+    } while (vector_equal(x, this->reduce()));
+    this->remove_unnecessary();
+}
+void QM::show_results()
+{
+    cout << "Ham toi thieu: " << endl;
+    cout << this->bin_to_expression(this->necessary.at(0));
+    for (int i = 1; i < this->necessary.size(); i++)
+    {
+        cout << "  +  " << this->bin_to_expression(this->necessary.at(i));
+    }
+    if (!this->one_for_all.empty())
+    {
+        cout << endl
+             << " Cong them cac hang sau: " << endl;
+        for (int i = 0; i < this->one_for_all.size(); i++)
+        {
+            cout << i + 1 << ".   ";
+            for (int j = 0; j < this->one_for_all.at(i).size(); j++)
+            {
+                cout << " or " << this->bin_to_expression(this->one_for_all.at(i).at(j));
+            }
+            cout << endl;
+        }
+    }
+}
+// auto x = a.minterms_expression;
+// do
+// {
+//     x.clear();
+//     x = a.reduce();
+// } while (vector_equal(x, a.reduce()));
+// a.remove_unnecessary();
+// cout << "Ham toi thieu: " << endl;
+// cout << a.bin_to_expression(a.necessary.at(0));
+// for (int i = 1; i < a.necessary.size(); i++)
+// {
+//     cout << "  +  " << a.bin_to_expression(a.necessary.at(i));
+// }
+// if (!a.one_for_all.empty())
+// {
+//     cout << endl
+//          << " Cong them cac hang sau: " << endl;
+//     for (int i = 0; i < a.one_for_all.size(); i++)
+//     {
+//         for (int j = 0; j < a.one_for_all.at(i).size(); j++)
+//         {
+//             cout << " or " << a.bin_to_expression(a.one_for_all.at(i).at(j));
+//         }
+//         cout << endl;
+//     }
+// }
