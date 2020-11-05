@@ -3,6 +3,7 @@ Implement Quine-McCluskey algorithm in C++
 
 
 How to use source code:
+
 Step 1: Clone this project:
     git clone https://github.com/LongDang2212/Quine_McCluskey_Algorithm_Cpp.git
 
