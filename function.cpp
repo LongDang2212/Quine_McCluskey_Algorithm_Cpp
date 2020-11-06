@@ -34,11 +34,11 @@ bool is_essential(vector<int> v)
     return (count == 1);
 }
 // hàm thay thế toàn bộ giá trị của vector bởi n
-vector<int> replace_vector_value(int n, vector<int> v)
-{
-    vector<int> temp(v.size(), n);
-    return temp;
-}
+// vector<int> replace_vector_value(int n, vector<int> v)
+// {
+//     vector<int> temp(v.size(), n);
+//     return temp;
+// }
 // hàm chuẩn hoá chuỗi, loại bỏ ký tự không liên quan(không phải số và dấu ,)
 string string_standardize(string s)
 {
@@ -54,8 +54,7 @@ string string_standardize(string s)
                 continue;
             if (temp[i] < '0' || temp[i] > '9')
             {
-                temp.erase(temp.begin() + i);
-                i--;
+                temp.erase(temp.begin() + i--);
             }
         }
     }
@@ -83,15 +82,7 @@ int bin_to_dec(string bin)
     int dec = 0;
     for (int i = 0; i < bin.size(); i++)
     {
-        int x = 1;
-        if (bin[i] == '1')
-            x = 1;
-        else
-        {
-            x = 0;
-        }
-
-        dec += x * pow(2, bin.size() - 1 - i);
+        dec += (bin[i] == '1' ? 1 : 0) * pow(2, bin.size() - 1 - i);
     }
     return dec;
 }
@@ -243,10 +234,10 @@ void QM::data_input()
     auto v2 = split(input, ",");
     for (int i = 0; i < v2.size(); i++)
     {
+        dont_care.push_back(stoi(v1.at(i)));
         if (!is_in_vector(padding(dec_to_bin(stoi(v2.at(i)))), minterms_expression))
         {
             minterms_expression.push_back(padding(dec_to_bin(stoi(v2.at(i)))));
-            dont_care.push_back(stoi(v1.at(i)));
         }
     }
 }

@@ -52,7 +52,7 @@ vector<vector<int>> find_root_minterm(vector<string>);
 vector<string> expression_from_PI(string);
 bool is_unnecessary(int, vector<vector<int>>);
 bool is_essential(vector<int>);
-vector<int> replace_vector_value(int, vector<int>);
+// vector<int> replace_vector_value(int, vector<int>);
 vector<vector<int>> mark_essential(vector<vector<int>>);
 bool is_necessary(int, vector<vector<int>>);
 //main class
