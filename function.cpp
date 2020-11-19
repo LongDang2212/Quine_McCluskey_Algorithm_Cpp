@@ -33,12 +33,7 @@ bool is_essential(vector<int> v)
     }
     return (count == 1);
 }
-// hàm thay thế toàn bộ giá trị của vector bởi n
-// vector<int> replace_vector_value(int n, vector<int> v)
-// {
-//     vector<int> temp(v.size(), n);
-//     return temp;
-// }
+
 // hàm chuẩn hoá chuỗi, loại bỏ ký tự không liên quan(không phải số và dấu ,)
 string string_standardize(string s)
 {
@@ -213,20 +208,7 @@ string QM::padding(string bin)
 // hàm nhập các minterm và dont care
 void QM::data_input()
 {
-    string input;
-    cout << "Nhap cac chi so minterm(0-" << pow(2, vars) - 1 << ", phan cach boi dau ,): ";
-    cin.ignore();
-    getline(cin, input);
-    auto v1 = split(input, ",");
-    input = string_standardize(input);
-    for (int i = 0; i < v1.size(); i++)
-    {
-        if (!is_in_vector(padding(dec_to_bin(stoi(v1.at(i)))), minterms_expression))
-        {
-            minterms_expression.push_back(padding(dec_to_bin(stoi(v1.at(i)))));
-            minterms.push_back(stoi(v1.at(i)));
-        }
-    }
+    string input, input1;
     cout << "Nhap cac chi so don't care(0-" << pow(2, vars) - 1 << ", phan cach boi dau , neu khong co thi nhap None): ";
     cin.ignore();
     getline(cin, input);
@@ -234,10 +216,27 @@ void QM::data_input()
     auto v2 = split(input, ",");
     for (int i = 0; i < v2.size(); i++)
     {
-        dont_care.push_back(stoi(v1.at(i)));
         if (!is_in_vector(padding(dec_to_bin(stoi(v2.at(i)))), minterms_expression))
         {
             minterms_expression.push_back(padding(dec_to_bin(stoi(v2.at(i)))));
+            dont_care.push_back(stoi(v2.at(i)));
+        }
+    }
+    string name = min_or_max ? "minterm" : "maxterm";
+    cout << "Nhap cac chi so " << name
+         << "(0-" << pow(2, vars) - 1 << ", phan cach boi dau ,): ";
+    //ncin.ignore();
+    getline(cin, input1);
+    input1 = string_standardize(input1);
+    if (!min_or_max)
+        input1 = maxterm_2_minterm(input1, input);
+    auto v1 = split(input1, ",");
+    for (int i = 0; i < v1.size(); i++)
+    {
+        if (!is_in_vector(padding(dec_to_bin(stoi(v1.at(i)))), minterms_expression))
+        {
+            minterms_expression.push_back(padding(dec_to_bin(stoi(v1.at(i)))));
+            minterms.push_back(stoi(v1.at(i)));
         }
     }
 }
@@ -363,50 +362,121 @@ void QM::processs()
 }
 void QM::show_results()
 {
-    cout << "Ham toi thieu: " << endl;
-    cout << this->bin_to_expression(this->necessary.at(0));
-    for (int i = 1; i < this->necessary.size(); i++)
+    if (min_or_max)
     {
-        cout << "  +  " << this->bin_to_expression(this->necessary.at(i));
-    }
-    if (!this->one_for_all.empty())
-    {
-        cout << endl
-             << " Cong them cac hang sau: " << endl;
-        for (int i = 0; i < this->one_for_all.size(); i++)
+        cout << "Ham toi thieu: " << endl;
+        cout << this->bin_to_expression(this->necessary.at(0));
+        for (int i = 1; i < this->necessary.size(); i++)
         {
-            cout << i + 1 << ".   ";
-            for (int j = 0; j < this->one_for_all.at(i).size(); j++)
+            cout << "  +  " << this->bin_to_expression(this->necessary.at(i));
+        }
+        if (!this->one_for_all.empty())
+        {
+            cout << endl
+                 << " Cong them cac hang sau: " << endl;
+            for (int i = 0; i < this->one_for_all.size(); i++)
             {
-                cout << " or " << this->bin_to_expression(this->one_for_all.at(i).at(j));
+                cout << i + 1 << ".   ";
+                for (int j = 0; j < this->one_for_all.at(i).size(); j++)
+                {
+                    cout << " or " << this->bin_to_expression(this->one_for_all.at(i).at(j));
+                }
+                cout << endl;
             }
-            cout << endl;
+        }
+    }
+    else
+    {
+        cout << "Ham toi thieu: " << endl;
+        cout << "(" << this->bin_to_expression_maxterm(this->necessary.at(0)) << ")";
+        for (int i = 1; i < this->necessary.size(); i++)
+        {
+            cout << "  *  (" << this->bin_to_expression_maxterm(this->necessary.at(i)) << ")";
+        }
+        if (!this->one_for_all.empty())
+        {
+            cout << endl
+                 << " Nhan them cac hang sau: " << endl;
+            for (int i = 0; i < this->one_for_all.size(); i++)
+            {
+                cout << i + 1 << ".   ";
+                for (int j = 0; j < this->one_for_all.at(i).size(); j++)
+                {
+                    cout << " or (" << this->bin_to_expression_maxterm(this->one_for_all.at(i).at(j)) << ")";
+                }
+                cout << endl;
+            }
         }
     }
 }
-// auto x = a.minterms_expression;
-// do
-// {
-//     x.clear();
-//     x = a.reduce();
-// } while (vector_equal(x, a.reduce()));
-// a.remove_unnecessary();
-// cout << "Ham toi thieu: " << endl;
-// cout << a.bin_to_expression(a.necessary.at(0));
-// for (int i = 1; i < a.necessary.size(); i++)
-// {
-//     cout << "  +  " << a.bin_to_expression(a.necessary.at(i));
-// }
-// if (!a.one_for_all.empty())
-// {
-//     cout << endl
-//          << " Cong them cac hang sau: " << endl;
-//     for (int i = 0; i < a.one_for_all.size(); i++)
-//     {
-//         for (int j = 0; j < a.one_for_all.at(i).size(); j++)
-//         {
-//             cout << " or " << a.bin_to_expression(a.one_for_all.at(i).at(j));
-//         }
-//         cout << endl;
-//     }
-// }
+// các hàm dưới đây dùng để xử lý trong trường hợp input là Maxterm
+string QM::bin_to_expression_maxterm(string bin)
+{
+    string exprression = "";
+    if (bin[0] == '0')
+    {
+
+        exprression.append(var_char.at(0));
+    }
+    else if (bin[0] == '1')
+    {
+
+        exprression.append(var_char.at(0) + "'");
+    }
+    else
+    {
+        exprression.append("None");
+    }
+
+    for (int i = 1; i < bin.length(); i++)
+    {
+        if (bin[i] == '0')
+        {
+            exprression.append(" + ");
+            exprression.append(var_char.at(i));
+        }
+        else if (bin[i] == '1')
+        {
+            exprression.append(" + ");
+            exprression.append(var_char.at(i) + "'");
+        }
+    }
+    return exprression;
+}
+void QM::set_type(int i)
+{
+    if (i == 1)
+        this->min_or_max = true;
+    else
+        this->min_or_max = false;
+}
+string QM::maxterm_2_minterm(string s, string s1)
+{
+    string temp;
+    auto v1 = split(s, ",");
+    auto v2 = split(s1, ",");
+    vector<int> temp1, temp2;
+    for (int i = 0; i < v1.size(); i++)
+    {
+        temp1.push_back(stoi(v1.at(i)));
+    }
+    for (int i = 0; i < v2.size(); i++)
+    {
+        temp2.push_back(stoi(v2.at(i)));
+    }
+    for (int i = 0; i < pow(2, vars); i++)
+    {
+        if (!is_in_vector(i, temp1) && !is_in_vector(i, temp2))
+        {
+            temp.append(to_string(i));
+            temp.append(",");
+        }
+    }
+    cout << endl
+         << "Maxterm:\t" << s << endl;
+    cout << endl
+         << "Don't care:\t" << s1 << endl;
+    cout << endl
+         << "Minterm:\t" << temp << endl;
+    return temp;
+}

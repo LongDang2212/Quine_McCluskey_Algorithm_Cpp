@@ -59,6 +59,7 @@ bool is_necessary(int, vector<vector<int>>);
 class QM
 {
 public:
+    bool min_or_max;                    // minterm hay maxterm
     int vars;                           //  số lượng biến
     vector<string> var_char;            //chữ cái biểu diễn biến
     vector<int> minterms;               // số thứ tự của minterm
@@ -67,10 +68,14 @@ public:
     vector<string> prime_implicants;    // các biểu thức của PI
     vector<string> necessary;
     vector<vector<string>> one_for_all;
+
 public:
     QM();
+    void set_type(int);
     void init();
+    string maxterm_2_minterm(string, string);
     string bin_to_expression(string);
+    string bin_to_expression_maxterm(string);
     string padding(string);
     void data_input();
     vector<string> reduce();

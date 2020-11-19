@@ -8,7 +8,44 @@ x:
     {
         cout << endl
              << "Quine-McClusky algorithm!" << endl;
+        cout << "1. Minterm" << endl
+             << "2. Maxterm" << endl
+             << "3. Exit" << endl;
+        int select;
+        cout << endl
+             << "Nhap lua chon: ";
+        cin >> select;
         QM a;
+        switch (select)
+        {
+        case 1:
+        {
+            a.set_type(1);
+            cout << endl
+                 << "Minterm!" << endl;
+            break;
+        }
+        case 2:
+        {
+            a.set_type(2);
+            cout << endl
+                 << "Maxterm!" << endl;
+            break;
+        }
+        case 3:
+        {
+            run = false;
+            goto x;
+        }
+
+        default:
+        {
+            cout << endl
+                 << "So da nhap khong hop le! Vui long thu lai." << endl;
+            goto x;
+        }
+        }
+
         a.init();
         a.data_input();
         a.processs();
