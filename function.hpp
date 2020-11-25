@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <omp.h>
 
 using namespace std;
 
@@ -42,6 +43,12 @@ vector<T> vector_concatenate(vector<T> v1, vector<T> v2)
     }
     return v1;
 }
+template <class T> // khuôn mẫu hàm loại bỏ phần tử trùng nhau trong vector
+void remove_same_in_vector(vector<T> &v)
+{
+    sort(v.begin(), v.end());
+    unique(v.begin(), v.end());
+}
 string string_standardize(string);
 string dec_to_bin(int);
 int bin_to_dec(string);
@@ -55,8 +62,8 @@ bool is_essential(vector<int>);
 // vector<int> replace_vector_value(int, vector<int>);
 vector<vector<int>> mark_essential(vector<vector<int>>);
 bool is_necessary(int, vector<vector<int>>);
-//main class
-class QM
+
+class QM //main class
 {
 public:
     bool min_or_max;                    // minterm hay maxterm

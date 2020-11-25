@@ -60,7 +60,7 @@ x:
             run = true;
         else
             cout << endl
-                 << "Cam on ban. Hen gap lai!" << endl;
+                 << "Cam on ban! Hen gap lai!" << endl;
 
         goto x;
     }

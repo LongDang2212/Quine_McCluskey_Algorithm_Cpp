@@ -128,7 +128,7 @@ bool is_combinable(string s1, string s2)
     }
 }
 
-// hàm thay thế phần tử giống nhau của 2 chuỗi thành dấu "-"
+// hàm thay thế phần tử khác nhau duy nhất của 2 chuỗi thành dấu "-"
 string replace_same_composition(string s1, string s2)
 {
     string temp = "";
@@ -168,7 +168,7 @@ QM::QM()
 void QM::init()
 {
     int n = -1;
-    while (n <= 0 || n > 10)
+    while (n <= 0)
     {
         cout << "Nhap so bien: ";
         cin >> n;
@@ -268,7 +268,7 @@ vector<string> QM::reduce()
         if (check.at(i) == 0)
             prime_implicants.push_back(minterms_expression.at(i));
     }
-    check.clear();
+
     minterms_expression.clear();
     minterms_expression = new_minterm_expression;
     return minterms_expression;
@@ -277,7 +277,9 @@ vector<string> QM::reduce()
 void QM::remove_unnecessary()
 {
     vector<int> un;
-    auto v = find_root_minterm(vector_concatenate(minterms_expression, prime_implicants));
+    prime_implicants = vector_concatenate(minterms_expression, prime_implicants);
+    remove_same_in_vector(prime_implicants);
+    auto v = find_root_minterm(prime_implicants);
     cout << "Cac minterm tao thanh PI:" << endl;
     for (int i = 0; i < v.size(); i++)
     {
@@ -290,7 +292,7 @@ void QM::remove_unnecessary()
     // for (int i = 0; i < minterms.size(); i++)
     //     cout << minterms.at(i) << "\t";
     // cout << endl;
-    vector<vector<int>> x(minterms.size(), vector<int>(v.size(), 0));
+    vector<vector<int>> x(minterms.size(), vector<int>(v.size(), 0)); // ma trận PI - minterm
     for (int i = 0; i < x.size(); i++)
     {
         for (int j = 0; j < x.at(0).size(); j++)
@@ -314,7 +316,6 @@ void QM::remove_unnecessary()
             cout << x.at(i).at(j) << "\t";
         cout << endl;
     }
-    prime_implicants = vector_concatenate(minterms_expression, prime_implicants);
     for (int i = 0; i < prime_implicants.size(); i++)
     {
         if (is_necessary(i, x))
@@ -358,6 +359,32 @@ void QM::processs()
         x.clear();
         x = this->reduce();
     } while (vector_equal(x, this->reduce()));
+    vector<string> new_minterm_expression;
+    int size = minterms_expression.size();
+    vector<int> check(size, 0);
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = i; j < size; j++)
+        {
+            if (is_combinable(minterms_expression.at(i), minterms_expression.at(j)))
+            {
+                check.at(i)++;
+                check.at(j)++;
+                string new_expression = replace_same_composition(minterms_expression.at(i), minterms_expression.at(j));
+                if (!is_in_vector(new_expression, new_minterm_expression))
+                {
+                    new_minterm_expression.push_back(new_expression);
+                }
+            }
+        }
+    }
+    for (int i = 0; i < size; i++)
+    {
+        if (check.at(i) == 0)
+            prime_implicants.push_back(minterms_expression.at(i));
+    }
+    minterms_expression.clear();
+    minterms_expression = new_minterm_expression;
     this->remove_unnecessary();
 }
 void QM::show_results()
